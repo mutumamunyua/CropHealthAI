@@ -9,16 +9,24 @@ CLIENT = InferenceHTTPClient(
 def predict_image(img_path):
     """Runs inference on an image using the Roboflow model."""
     try:
-        result = CLIENT.infer(img_path, model_id="corn-maize-leaf-disease/1")
+        print(f"🔍 Running AI Model on: {img_path}")  # Debugging log
         
-        # Ensure result contains expected keys before accessing
-        if "top" in result and "confidence" in result:
+        # Call the AI Model
+        result = CLIENT.infer(img_path, model_id="corn-maize-leaf-disease/1")
+        print(f"📡 AI API Response: {result}")  # Log response from API
+
+        # Validate response
+        if "predictions" in result and len(result["predictions"]) > 0:
+            prediction = result["predictions"][0]  # Get top prediction
+            
             return {
-                "prediction": result["top"],  # Get the top predicted class
-                "confidence": result["confidence"]
+                "filename": img_path.split("/")[-1],  # Extract filename
+                "disease": prediction["class"],  # Disease name
+                "confidence": f"{prediction['confidence'] * 100:.2f}%"  # Convert to %
             }
         else:
-            return {"error": "Unexpected API response format: " + str(result)}
+            return {"error": "No disease detected"}
 
     except Exception as e:
+        print(f"⚠️ AI Model Error: {str(e)}")  # Debugging log
         return {"error": f"Inference error: {str(e)}"}

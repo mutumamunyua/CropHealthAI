@@ -2,10 +2,10 @@ from flask import Flask, request, jsonify
 import os
 from werkzeug.utils import secure_filename
 from ai_model import predict_image
-from flask_cors import CORS  # Ensure frontend can access backend
+from flask_cors import CORS
 
 app = Flask(__name__)
-CORS(app)  # Enable CORS for all routes
+CORS(app)  # Enable CORS for frontend access
 
 UPLOAD_FOLDER = "uploads"
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
@@ -23,12 +23,14 @@ def home():
 
 @app.route("/upload", methods=["POST"])
 def upload_files():
-    """Handles multiple file uploads and AI model predictions."""
+    """Handles file uploads and AI model predictions."""
     if "files" not in request.files:
+        print("⚠️ No files received in request")
         return jsonify({"error": "No files uploaded"}), 400
 
     files = request.files.getlist("files")  # Get all uploaded files
-    if not files:
+    if not files or files[0].filename == '':
+        print("⚠️ No files selected")
         return jsonify({"error": "No selected files"}), 400
 
     results = []
@@ -38,10 +40,13 @@ def upload_files():
             file_path = os.path.join(app.config["UPLOAD_FOLDER"], filename)
             file.save(file_path)
 
+            print(f"✅ Image Saved: {file_path}")
+
             # Run AI Model on Uploaded Image
             result = predict_image(file_path)
-            result["filename"] = filename  # Include filename in response
             results.append(result)
+
+    print("🔥 Final API Response:", results)  # Debugging
 
     return jsonify({"results": results})
 

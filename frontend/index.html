@@ -1,25 +1,60 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Image Prediction</title>
-    <link rel="stylesheet" href="static/styles.css">
-</head>
-<body>
-
-    <h1>Upload Images for AI Prediction</h1>
-
-    <form id="upload-form">
-        <input type="file" id="file-input" multiple accept="image/*">
-        <button type="submit">Upload</button>
-    </form>
-
-    <div id="image-preview"></div>
-    <div id="loading" class="hidden">Processing...</div>
-    <div id="result"></div>
-
-    <script src="static/script.js"></script>
-
-</body>
-</html>
+1  <!DOCTYPE html>
+2  <html lang="en">
+3  <head>
+4      <meta charset="UTF-8">
+5      <meta name="viewport" content="width=device-width, initial-scale=1">
+6      <title>AI Image Prediction</title>
+7      
+8      <!-- Bootstrap CSS -->
+9      <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+10      <link rel="stylesheet" href="static/styles.css">
+11  </head>
+12  <body class="bg-light">
+13  
+14      <div class="container mt-5">
+15          <!-- Upload Section -->
+16          <div class="card shadow-sm p-4">
+17              <h3 class="text-center">Upload Images for AI Prediction</h3>
+18              <form id="upload-form" class="text-center">
+19                  <div class="mb-3">
+20                      <input type="file" id="imageUpload" class="form-control" multiple accept="image/*">
+21                  </div>
+22                  <button type="submit" id="predict-button" class="btn btn-success">Predict</button>
+23              </form>
+24          </div>
+25  
+26          <!-- Loading Indicator -->
+27          <div class="text-center mt-3" id="loading" style="display: none;">
+28              <div class="spinner-border text-primary" role="status">
+29                  <span class="visually-hidden">Processing...</span>
+30              </div>
+31          </div>
+32  
+33          <!-- Predictions Section -->
+34          <div class="container mt-4">
+35              <h4>Predictions:</h4>
+36              <div id="predictions-container">
+37                  <table class="table table-striped table-bordered mt-3">
+38                      <thead class="table-dark">
+39                          <tr>
+40                              <th>Image</th>
+41                              <th>Diagnostic</th>
+42                              <th>Confidence Interval</th>
+43                          </tr>
+44                      </thead>
+45                      <tbody>
+46                          <!-- Predictions will be dynamically inserted here -->
+47                      </tbody>
+48                  </table>
+49              </div>
+50          </div>
+51  
+52      </div>
+53  
+54      <!-- Bootstrap JS -->
+55      <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+56      <!-- Custom JavaScript -->
+57      <script src="static/script.js"></script>
+58  
+59  </body>
+60  </html>
