@@ -1,60 +1,95 @@
-1  <!DOCTYPE html>
-2  <html lang="en">
-3  <head>
-4      <meta charset="UTF-8">
-5      <meta name="viewport" content="width=device-width, initial-scale=1">
-6      <title>AI Image Prediction</title>
-7      
-8      <!-- Bootstrap CSS -->
-9      <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-10      <link rel="stylesheet" href="static/styles.css">
-11  </head>
-12  <body class="bg-light">
-13  
-14      <div class="container mt-5">
-15          <!-- Upload Section -->
-16          <div class="card shadow-sm p-4">
-17              <h3 class="text-center">Upload Images for AI Prediction</h3>
-18              <form id="upload-form" class="text-center">
-19                  <div class="mb-3">
-20                      <input type="file" id="imageUpload" class="form-control" multiple accept="image/*">
-21                  </div>
-22                  <button type="submit" id="predict-button" class="btn btn-success">Predict</button>
-23              </form>
-24          </div>
-25  
-26          <!-- Loading Indicator -->
-27          <div class="text-center mt-3" id="loading" style="display: none;">
-28              <div class="spinner-border text-primary" role="status">
-29                  <span class="visually-hidden">Processing...</span>
-30              </div>
-31          </div>
-32  
-33          <!-- Predictions Section -->
-34          <div class="container mt-4">
-35              <h4>Predictions:</h4>
-36              <div id="predictions-container">
-37                  <table class="table table-striped table-bordered mt-3">
-38                      <thead class="table-dark">
-39                          <tr>
-40                              <th>Image</th>
-41                              <th>Diagnostic</th>
-42                              <th>Confidence Interval</th>
-43                          </tr>
-44                      </thead>
-45                      <tbody>
-46                          <!-- Predictions will be dynamically inserted here -->
-47                      </tbody>
-48                  </table>
-49              </div>
-50          </div>
-51  
-52      </div>
-53  
-54      <!-- Bootstrap JS -->
-55      <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-56      <!-- Custom JavaScript -->
-57      <script src="static/script.js"></script>
-58  
-59  </body>
-60  </html>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CropHealthAI</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="static/styles.css">
+</head>
+
+<body class="bg-light">
+
+  <div class="container mt-5">
+
+    <!-- Greeting (for logged-in users) -->
+    <h4 id="user-greeting" class="text-success text-center mb-3"></h4>
+
+    <!-- Navigation Buttons -->
+    <nav class="mb-4 text-center">
+      <button id="btn-login" class="btn btn-primary">Login</button>
+      <button id="btn-signup" class="btn btn-success">Sign Up</button>
+      <button id="btn-logout" class="btn btn-danger d-none">Logout</button>
+    </nav>
+
+    <!-- Login Section -->
+    <div id="login-section" class="d-none">
+      <h3>Login</h3>
+      <form id="login-form">
+        <div class="mb-3">
+          <label for="loginEmail" class="form-label">Email</label>
+          <input type="email" class="form-control" id="loginEmail" required>
+        </div>
+        <div class="mb-3">
+          <label for="loginPassword" class="form-label">Password</label>
+          <input type="password" class="form-control" id="loginPassword" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Login</button>
+      </form>
+    </div>
+
+    <!-- Signup Section -->
+    <div id="signup-section" class="d-none">
+      <h3>Sign Up</h3>
+      <form id="signup-form">
+        <div class="mb-3">
+          <label for="signupUsername" class="form-label">Username</label>
+          <input type="text" class="form-control" id="signupUsername" required>
+        </div>
+        <div class="mb-3">
+          <label for="signupEmail" class="form-label">Email</label>
+          <input type="email" class="form-control" id="signupEmail" required>
+        </div>
+        <div class="mb-3">
+          <label for="signupPassword" class="form-label">Password</label>
+          <input type="password" class="form-control" id="signupPassword" required>
+        </div>
+        <button type="submit" class="btn btn-success">Sign Up</button>
+      </form>
+    </div>
+
+    <!-- Upload Section (Protected) -->
+    <div id="upload-section" class="d-none">
+      <h3>Upload Images for AI Prediction</h3>
+      <form id="upload-form" class="text-center">
+        <div class="mb-3">
+          <input type="file" id="imageUpload" class="form-control" multiple accept="image/*">
+        </div>
+        <button type="submit" id="predict-button" class="btn btn-warning">Predict</button>
+      </form>
+
+      <!-- Loading Indicator -->
+      <div class="text-center mt-3" id="loading" style="display: none;">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Processing...</span>
+        </div>
+      </div>
+
+      <!-- Predictions Section -->
+      <div class="container mt-4">
+        <h4>Predictions:</h4>
+        <div id="predictions-container"></div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- Custom JavaScript -->
+  <script src="static/script.js"></script>
+</body>
+
+</html>

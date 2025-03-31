@@ -1,17 +1,138 @@
 document.addEventListener("DOMContentLoaded", function () {
-    console.log("🚀 Script loaded successfully!");
+    // Navigation Buttons
+    let btnLogin = document.getElementById("btn-login");
+    let btnSignup = document.getElementById("btn-signup");
+    let btnLogout = document.getElementById("btn-logout");
 
-    document.body.innerHTML = document.body.innerHTML.replace(/\b\d+\b/g, '');
-    
-    let form = document.getElementById("upload-form");
+    // Sections
+    let loginSection = document.getElementById("login-section");
+    let signupSection = document.getElementById("signup-section");
+    let uploadSection = document.getElementById("upload-section");
+
+    // Forms
+    let loginForm = document.getElementById("login-form");
+    let signupForm = document.getElementById("signup-form");
+    let uploadForm = document.getElementById("upload-form");
+
+    // File upload elements
     let fileInput = document.getElementById("imageUpload");
-    let button = document.getElementById("predict-button");
+    let buttonPredict = document.getElementById("predict-button");
     let loadingIndicator = document.getElementById("loading");
     let predictionsContainer = document.getElementById("predictions-container");
 
-    form.addEventListener("submit", async function (event) {
-        event.preventDefault();
+    // Greeting element (user name display)
+    let userGreeting = document.getElementById("user-greeting");
 
+    // Validate DOM elements
+    if (!btnLogin || !btnSignup || !btnLogout ||
+        !loginSection || !signupSection || !uploadSection ||
+        !loginForm || !signupForm || !uploadForm ||
+        !fileInput || !buttonPredict || !loadingIndicator || !predictionsContainer || !userGreeting) {
+        console.error("One or more required DOM elements are missing.");
+        return;
+    }
+
+    // Authentication check
+    function checkAuth() {
+        const token = localStorage.getItem("token");
+        const username = localStorage.getItem("username");
+
+        if (token) {
+            loginSection.classList.add("d-none");
+            signupSection.classList.add("d-none");
+            uploadSection.classList.remove("d-none");
+            btnLogin.classList.add("d-none");
+            btnSignup.classList.add("d-none");
+            btnLogout.classList.remove("d-none");
+            userGreeting.textContent = `Welcome, ${username || 'User'}!`;
+        } else {
+            uploadSection.classList.add("d-none");
+            btnLogout.classList.add("d-none");
+            btnLogin.classList.remove("d-none");
+            btnSignup.classList.remove("d-none");
+            userGreeting.textContent = '';
+        }
+    }
+
+    checkAuth();
+
+    // Button Event Listeners
+    btnLogin.addEventListener("click", () => {
+        loginSection.classList.remove("d-none");
+        signupSection.classList.add("d-none");
+        uploadSection.classList.add("d-none");
+    });
+
+    btnSignup.addEventListener("click", () => {
+        signupSection.classList.remove("d-none");
+        loginSection.classList.add("d-none");
+        uploadSection.classList.add("d-none");
+    });
+
+    btnLogout.addEventListener("click", () => {
+        localStorage.removeItem("token");
+        localStorage.removeItem("username");
+        checkAuth();
+    });
+
+    // Login Form Submission
+    loginForm.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        let email = document.getElementById("loginEmail").value;
+        let password = document.getElementById("loginPassword").value;
+
+        try {
+            let response = await fetch("http://127.0.0.1:5000/auth/login", {
+                method: "POST",
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify({email, password})
+            });
+
+            let data = await response.json();
+            if (response.ok) {
+                localStorage.setItem("token", data.token);
+                localStorage.setItem("username", email.split('@')[0]);
+                checkAuth();
+            } else {
+                alert(data.error || "Login failed");
+            }
+        } catch (error) {
+            console.error("❌ Login Error:", error);
+            alert("Login failed. See console for details.");
+        }
+    });
+
+    // Signup Form Submission
+    signupForm.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        let username = document.getElementById("signupUsername").value;
+        let email = document.getElementById("signupEmail").value;
+        let password = document.getElementById("signupPassword").value;
+
+        try {
+            let response = await fetch("http://127.0.0.1:5000/auth/register", {
+                method: "POST",
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify({username, email, password})
+            });
+
+            let data = await response.json();
+            if (response.ok) {
+                alert("Signup successful! Please verify your email.");
+                signupSection.classList.add("d-none");
+                loginSection.classList.remove("d-none");
+            } else {
+                alert(data.error || "Signup failed");
+            }
+        } catch (error) {
+            console.error("❌ Signup Error:", error);
+            alert("Signup failed. See console for details.");
+        }
+    });
+
+    // Image Upload & Predictions
+    uploadForm.addEventListener("submit", async (event) => {
+        event.preventDefault();
         let files = fileInput.files;
         if (files.length === 0) {
             alert("Please select at least one image.");
@@ -23,93 +144,62 @@ document.addEventListener("DOMContentLoaded", function () {
             formData.append("files", file);
         }
 
-        // Disable button and show loading
-        button.innerText = "Working...";
-        button.disabled = true;
+        buttonPredict.innerText = "Working...";
+        buttonPredict.disabled = true;
         loadingIndicator.style.display = "block";
 
         try {
+            let token = localStorage.getItem("token");
             let response = await fetch("http://127.0.0.1:5000/upload", {
                 method: "POST",
+                headers: { "Authorization": `Bearer ${token}` },
                 body: formData
             });
 
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-
             let data = await response.json();
-            console.log("🔥 Received Predictions:", data);
-
-            showPredictions(data.results, files);
+            displayPredictions(data.results, files);
         } catch (error) {
-            console.error("❌ Error:", error);
-            alert("Error processing the images. Check console for details.");
+            console.error("❌ Upload Error:", error);
+            alert("Image processing failed. See console for details.");
         } finally {
-            // Reset button text
-            button.innerText = "Predict";
-            button.disabled = false;
+            buttonPredict.innerText = "Predict";
+            buttonPredict.disabled = false;
             loadingIndicator.style.display = "none";
         }
     });
 
-    function showPredictions(results, files) {
-        predictionsContainer.innerHTML = ""; // Clear previous results
-    
-        if (!results || results.length === 0) {
-            predictionsContainer.innerHTML = "<p class='text-danger'>No predictions available.</p>";
-            return;
-        }
-    
-        let table = document.createElement("table");
-        table.className = "table table-striped table-bordered mt-3";
-    
-        let thead = document.createElement("thead");
-        thead.className = "table-dark";
-        thead.innerHTML = `
-            <tr>
-                <th>Image</th>
-                <th>Diagnostic</th>
-                <th>Confidence Interval</th>
-            </tr>
-        `;
-    
-        let tbody = document.createElement("tbody");
-    
+    // Display predictions properly
+    function displayPredictions(results, files) {
+        predictionsContainer.innerHTML = "";
+
+        let table = `
+            <table class="table table-striped table-bordered">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Image</th>
+                        <th>Diagnostic</th>
+                        <th>Confidence Interval</th>
+                    </tr>
+                </thead>
+                <tbody>`;
+
         results.forEach((item, index) => {
-            let confidence = parseFloat(item.confidence);
-            let confidenceColor = confidence >= 80 ? "text-success" :
-                                  confidence >= 60 ? "text-warning" : "text-danger";
-    
             let reader = new FileReader();
             reader.onload = function (e) {
-                let row = document.createElement("tr");
-    
-                let imgCell = document.createElement("td");
-                let img = document.createElement("img");
-                img.src = e.target.result;
-                img.className = "img-thumbnail";
-                img.width = 100;
-                imgCell.appendChild(img);
-    
-                let diseaseCell = document.createElement("td");
-                diseaseCell.textContent = item.disease;
-    
-                let confidenceCell = document.createElement("td");
-                confidenceCell.className = confidenceColor;
-                confidenceCell.innerHTML = `<strong>${confidence}%</strong>`;
-    
-                row.appendChild(imgCell);
-                row.appendChild(diseaseCell);
-                row.appendChild(confidenceCell);
-    
-                tbody.appendChild(row);
+                let confidence = parseFloat(item.confidence).toFixed(2);
+                let color = confidence >= 80 ? 'success' : confidence >= 60 ? 'warning' : 'danger';
+                table += `
+                    <tr>
+                        <td><img src="${e.target.result}" class="img-thumbnail" width="100"></td>
+                        <td>${item.disease}</td>
+                        <td class="text-${color}"><strong>${confidence}%</strong></td>
+                    </tr>`;
+                if (index === results.length - 1) {
+                    table += "</tbody></table>";
+                    predictionsContainer.innerHTML = table;
+                }
             };
             reader.readAsDataURL(files[index]);
         });
-    
-        table.appendChild(thead);
-        table.appendChild(tbody);
-        predictionsContainer.appendChild(table);
     }
 });
