@@ -3,9 +3,28 @@ import os
 from werkzeug.utils import secure_filename
 from ai_model import predict_image
 from flask_cors import CORS
+from config import mail, Config, users_collection
+from pymongo import MongoClient
+from routes.auth import auth_bp
+from datetime import datetime
 
 app = Flask(__name__)
-CORS(app)  # Enable CORS for frontend access
+CORS(app)
+
+# Load email settings
+app.config.from_object(Config)
+mail.init_app(app)
+
+# Register authentication routes
+app.register_blueprint(auth_bp, url_prefix="/auth")
+
+# MongoDB Connection
+try:
+    client = MongoClient(Config.MONGO_URI)
+    db = client.get_database()
+    print("✅ MongoDB Connected Successfully")
+except Exception as e:
+    print(f"⚠️ MongoDB Connection Error: {e}")
 
 UPLOAD_FOLDER = "uploads"
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
@@ -14,7 +33,6 @@ app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 ALLOWED_EXTENSIONS = {"png", "jpg", "jpeg"}
 
 def allowed_file(filename):
-    """Checks if the uploaded file is allowed."""
     return "." in filename and filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
 
 @app.route("/", methods=["GET"])
@@ -23,12 +41,11 @@ def home():
 
 @app.route("/upload", methods=["POST"])
 def upload_files():
-    """Handles file uploads and AI model predictions."""
     if "files" not in request.files:
         print("⚠️ No files received in request")
         return jsonify({"error": "No files uploaded"}), 400
 
-    files = request.files.getlist("files")  # Get all uploaded files
+    files = request.files.getlist("files")
     if not files or files[0].filename == '':
         print("⚠️ No files selected")
         return jsonify({"error": "No selected files"}), 400
@@ -42,11 +59,40 @@ def upload_files():
 
             print(f"✅ Image Saved: {file_path}")
 
-            # Run AI Model on Uploaded Image
-            result = predict_image(file_path)
-            results.append(result)
+            try:
+                print(f"🔍 Running AI Model on: {file_path}")
+                result = predict_image(file_path)
+                print(f"📡 AI API Response: {result}")
 
-    print("🔥 Final API Response:", results)  # Debugging
+                # Correct extraction based on your actual AI response
+                prediction_result = result.get("disease", "Unknown")
+                confidence_score_str = result.get("confidence", "0%").replace('%', '')
+                confidence_score = float(confidence_score_str)
+
+                results.append({
+                    "disease": prediction_result,
+                    "confidence": confidence_score
+                })
+
+                # Save prediction correctly to MongoDB
+                try:
+                    db.predictions.insert_one({
+                        "filename": filename,
+                        "prediction_result": prediction_result,
+                        "confidence_score": confidence_score,
+                        "timestamp": datetime.utcnow()
+                    })
+                except Exception as db_error:
+                    print(f"⚠️ MongoDB Insert Error: {db_error}")
+
+            except Exception as e:
+                print(f"⚠️ AI Model Error: {e}")
+                results.append({
+                    "disease": "Prediction Failed",
+                    "confidence": 0
+                })
+
+    print("🔥 Final API Response:", results)
 
     return jsonify({"results": results})
 
