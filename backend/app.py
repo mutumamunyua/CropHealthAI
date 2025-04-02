@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, send_from_directory, request, jsonify
 import os
 from werkzeug.utils import secure_filename
 from ai_model import predict_image
@@ -38,6 +38,16 @@ def allowed_file(filename):
 @app.route("/", methods=["GET"])
 def home():
     return "Flask server is running!"
+
+@app.route('/')
+def serve_index():
+    """Serve the main index.html from the frontend folder."""
+    return send_from_directory('../frontend', 'index.html')
+
+@app.route('/static/<path:path>')
+def serve_static(path):
+    """Serve all static files (JS, CSS) from the frontend/static folder."""
+    return send_from_directory('../frontend/static', path)
 
 @app.route("/upload", methods=["POST"])
 def upload_files():
@@ -97,4 +107,4 @@ def upload_files():
     return jsonify({"results": results})
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(host="0.0.0.0", port=5001, debug=True)
