@@ -82,7 +82,7 @@ document.addEventListener("DOMContentLoaded", function () {
         let password = document.getElementById("loginPassword").value;
 
         try {
-            let response = await fetch("http://127.0.0.1:5000/auth/login", {
+            let response = await fetch("http://127.0.0.1:5001/auth/login", {
                 method: "POST",
                 headers: {"Content-Type": "application/json"},
                 body: JSON.stringify({email, password})
@@ -110,7 +110,7 @@ document.addEventListener("DOMContentLoaded", function () {
         let password = document.getElementById("signupPassword").value;
 
         try {
-            let response = await fetch("http://127.0.0.1:5000/auth/register", {
+            let response = await fetch("http://127.0.0.1:5001/auth/register", {
                 method: "POST",
                 headers: {"Content-Type": "application/json"},
                 body: JSON.stringify({username, email, password})
@@ -150,7 +150,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         try {
             let token = localStorage.getItem("token");
-            let response = await fetch("http://127.0.0.1:5000/upload", {
+            let response = await fetch("http://127.0.0.1:5001/upload", {
                 method: "POST",
                 headers: { "Authorization": `Bearer ${token}` },
                 body: formData
@@ -171,35 +171,45 @@ document.addEventListener("DOMContentLoaded", function () {
     // Display predictions properly
     function displayPredictions(results, files) {
         predictionsContainer.innerHTML = "";
-
-        let table = `
-            <table class="table table-striped table-bordered">
-                <thead class="table-dark">
-                    <tr>
-                        <th>Image</th>
-                        <th>Diagnostic</th>
-                        <th>Confidence Interval</th>
-                    </tr>
-                </thead>
-                <tbody>`;
-
+    
+        let rows = new Array(results.length);
+        let filesRead = 0;
+    
         results.forEach((item, index) => {
             let reader = new FileReader();
             reader.onload = function (e) {
                 let confidence = parseFloat(item.confidence).toFixed(2);
                 let color = confidence >= 80 ? 'success' : confidence >= 60 ? 'warning' : 'danger';
-                table += `
+    
+                rows[index] = `
                     <tr>
                         <td><img src="${e.target.result}" class="img-thumbnail" width="100"></td>
                         <td>${item.disease}</td>
                         <td class="text-${color}"><strong>${confidence}%</strong></td>
-                    </tr>`;
-                if (index === results.length - 1) {
-                    table += "</tbody></table>";
+                    </tr>
+                `;
+    
+                filesRead++;
+                if (filesRead === results.length) {
+                    // All images are processed — now render the table
+                    let table = `
+                        <table class="table table-striped table-bordered">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>Image</th>
+                                    <th>Diagnostic</th>
+                                    <th>Confidence Interval</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${rows.join('')}
+                            </tbody>
+                        </table>
+                    `;
                     predictionsContainer.innerHTML = table;
                 }
             };
             reader.readAsDataURL(files[index]);
         });
-    }
+    }      
 });
