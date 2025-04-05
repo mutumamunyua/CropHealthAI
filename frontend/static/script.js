@@ -82,7 +82,7 @@ document.addEventListener("DOMContentLoaded", function () {
         let password = document.getElementById("loginPassword").value;
 
         try {
-            let response = await fetch(`${window.location.origin}/auth/login`, {
+            let response = await fetch("http://127.0.0.1:5001/auth/login", {
                 method: "POST",
                 headers: {"Content-Type": "application/json"},
                 body: JSON.stringify({email, password})
@@ -110,7 +110,7 @@ document.addEventListener("DOMContentLoaded", function () {
         let password = document.getElementById("signupPassword").value;
 
         try {
-            let response = await fetch(`${window.location.origin}/auth/register`, {
+            let response = await fetch("http://127.0.0.1:5001/auth/register", {
                 method: "POST",
                 headers: {"Content-Type": "application/json"},
                 body: JSON.stringify({username, email, password})
