@@ -35,3 +35,9 @@ jobs:
             --platform linux/amd64 \
             -t mutumamunyua/crophealthai:latest \
             --push .
+
+      # Trigger CD
+      - name: Trigger Render Redeploy
+        run: |
+          echo "Triggering redeploy on Render..."
+          curl -X POST ${{ secrets.RENDER_WEBHOOK_URL }}
