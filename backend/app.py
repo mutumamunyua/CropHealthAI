@@ -8,7 +8,12 @@ from pymongo import MongoClient
 from routes.auth import auth_bp
 from datetime import datetime
 
-app = Flask(__name__)
+# os.getcwd() returns the working directory (set to /app in Docker)
+# Determine absolute paths based on the container's working directory.
+FRONTEND_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'frontend')
+FRONTEND_STATIC_DIR = os.path.join(FRONTEND_DIR, 'static')
+
+app = Flask(__name__, static_folder=FRONTEND_STATIC_DIR, template_folder=FRONTEND_DIR)
 CORS(app)
 
 # Load email settings
@@ -35,19 +40,15 @@ ALLOWED_EXTENSIONS = {"png", "jpg", "jpeg"}
 def allowed_file(filename):
     return "." in filename and filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
 
-@app.route("/", methods=["GET"])
-def home():
-    return "Flask server is running!"
-
-@app.route('/')
+@app.route("/")
 def serve_index():
     """Serve the main index.html from the frontend folder."""
-    return send_from_directory('../frontend', 'index.html')
+    return send_from_directory(FRONTEND_DIR, 'index.html')
 
 @app.route('/static/<path:path>')
 def serve_static(path):
     """Serve all static files (JS, CSS) from the frontend/static folder."""
-    return send_from_directory('../frontend/static', path)
+    return send_from_directory(FRONTEND_STATIC_DIR, path)
 
 @app.route("/upload", methods=["POST"])
 def upload_files():
