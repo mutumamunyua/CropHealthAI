@@ -3,20 +3,24 @@ import os
 from werkzeug.utils import secure_filename
 from ai_model import predict_image
 from flask_cors import CORS
-from config import mail, Config, users_collection
+from config import mail, Config, users_collection, predictions_collection
 from pymongo import MongoClient
 from routes.auth import auth_bp
 from datetime import datetime
+from utils.treatments import get_treatment_recommendation  # Added
 
-# os.getcwd() returns the working directory (set to /app in Docker)
-# Determine absolute paths based on the container's working directory.
-FRONTEND_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'frontend')
-FRONTEND_STATIC_DIR = os.path.join(FRONTEND_DIR, 'static')
+# [MODIFIED] Define absolute paths for frontend directories based on current working directory.
+# When deployed (or with Docker where WORKDIR is /app), your project root should contain the 'frontend' folder.
+BASE_DIR = os.path.abspath(os.path.dirname(__file__))
+FRONTEND_DIR = os.path.join(BASE_DIR, "..", "frontend")
+FRONTEND_STATIC_DIR = os.path.join(FRONTEND_DIR, "static")
+TREATMENTS_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'utils', 'treatments')
 
+# Create Flask app using absolute paths for static and template folders.
 app = Flask(__name__, static_folder=FRONTEND_STATIC_DIR, template_folder=FRONTEND_DIR)
 CORS(app)
 
-# Load email settings
+# Load email settings and configuration
 app.config.from_object(Config)
 mail.init_app(app)
 
@@ -30,6 +34,13 @@ try:
     print("✅ MongoDB Connected Successfully")
 except Exception as e:
     print(f"⚠️ MongoDB Connection Error: {e}")
+    db = None
+
+# Define predictions collection if db is available (not shown in your snippet but assumed to be handled in your config)
+if db is not None:
+    predictions_collection = db.get_collection("predictions")
+else:
+    predictions_collection = None
 
 UPLOAD_FOLDER = "uploads"
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
@@ -40,15 +51,42 @@ ALLOWED_EXTENSIONS = {"png", "jpg", "jpeg"}
 def allowed_file(filename):
     return "." in filename and filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
 
+# Serve the frontend index.html using the absolute path.
 @app.route("/")
 def serve_index():
-    """Serve the main index.html from the frontend folder."""
     return send_from_directory(FRONTEND_DIR, 'index.html')
 
-@app.route('/static/<path:path>')
+# Serve static assets from the absolute static folder.
+@app.route("/static/<path:path>")
 def serve_static(path):
-    """Serve all static files (JS, CSS) from the frontend/static folder."""
     return send_from_directory(FRONTEND_STATIC_DIR, path)
+
+# Serve treatment images (unchanged)
+@app.route('/treatments/<path:filename>')
+def serve_treatment_images(filename):
+    return send_from_directory(TREATMENTS_DIR, filename)
+
+@app.route('/utils/treatments/<path:disease>', methods=["GET"])
+def serve_treatment(disease):
+    """
+    Serve treatment recommendations based on the disease name.
+    """
+    try:
+        # Use the centralized treatment logic
+        treatment = get_treatment_recommendation(disease)
+
+        # Construct full image URLs
+        base_url = request.host_url.rstrip("/")  # Get the base URL of the server
+        image_urls = [f"{base_url}/treatments/{img}" for img in treatment.get("images", [])]
+
+        return jsonify({
+            "treatment": treatment["text"],
+            "treatment_images": image_urls
+            }), 200
+
+    except Exception as e:
+        print(f"⚠️ Error fetching treatment for {disease}: {e}")
+        return jsonify({"error": "Failed to fetch treatment"}), 500
 
 @app.route("/upload", methods=["POST"])
 def upload_files():
@@ -60,6 +98,10 @@ def upload_files():
     if not files or files[0].filename == '':
         print("⚠️ No files selected")
         return jsonify({"error": "No selected files"}), 400
+
+    # Get latitude and longitude from form data, if provided.
+    latitude = request.form.get("latitude")
+    longitude = request.form.get("longitude")
 
     results = []
     for file in files:
@@ -75,22 +117,29 @@ def upload_files():
                 result = predict_image(file_path)
                 print(f"📡 AI API Response: {result}")
 
-                # Correct extraction based on your actual AI response
+                # Correctly extract prediction details based on your API response.
                 prediction_result = result.get("disease", "Unknown")
                 confidence_score_str = result.get("confidence", "0%").replace('%', '')
                 confidence_score = float(confidence_score_str)
 
+                # Get treatment recommendation (if applicable).
+                treatment = get_treatment_recommendation(prediction_result)
+
                 results.append({
                     "disease": prediction_result,
-                    "confidence": confidence_score
+                    "confidence": confidence_score,
+                    "treatment": treatment
                 })
 
-                # Save prediction correctly to MongoDB
+                # Save prediction to MongoDB.
                 try:
-                    db.predictions.insert_one({
+                    predictions_collection.insert_one({
                         "filename": filename,
                         "prediction_result": prediction_result,
                         "confidence_score": confidence_score,
+                        "latitude": latitude,
+                        "longitude": longitude,
+                        "treatment": treatment,
                         "timestamp": datetime.utcnow()
                     })
                 except Exception as db_error:
@@ -100,11 +149,14 @@ def upload_files():
                 print(f"⚠️ AI Model Error: {e}")
                 results.append({
                     "disease": "Prediction Failed",
-                    "confidence": 0
+                    "confidence": 0,
+                    "treatment": {
+                        "text": "No specific treatment recommendation available.",
+                        "images": []
+                    }
                 })
 
     print("🔥 Final API Response:", results)
-
     return jsonify({"results": results})
 
 if __name__ == "__main__":

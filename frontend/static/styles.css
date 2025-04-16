@@ -209,3 +209,13 @@ tr:hover {
     max-width: 400px;
     width: 100%;
 }
+
+/* Treatment Images Styling */
+.treatment-images img {
+    margin: 5px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 5px;
+    width: 100px;
+    height: auto;
+}

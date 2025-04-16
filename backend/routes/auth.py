@@ -16,19 +16,21 @@ users_collection.create_index("email", unique=True)
 @auth_bp.route("/register", methods=["POST"])
 def register():
     data = request.json
+    first_name = data.get("first_name")  # Added
+    last_name = data.get("last_name")    # Added
     username = data.get("username")
     email = data.get("email")
     password = data.get("password")
 
-    if not username or not email or not password:
+    if not first_name or not last_name or not username or not email or not password:  # Modified
         return jsonify({"error": "Missing fields"}), 400
 
     # Check if email already exists
     if users_collection.find_one({"email": email}):
         return jsonify({"error": "Email already registered"}), 409
 
-    # Hash password
-    hashed_password = generate_password_hash(password)
+    # Hash password explicitly
+    hashed_password = generate_password_hash(password, method='pbkdf2:sha256')  # Modified
 
     # Generate verification token with expiry
     verification_token = str(uuid.uuid4())
@@ -36,6 +38,8 @@ def register():
 
     # Store user in DB (unverified)
     users_collection.insert_one({
+        "first_name": first_name,  # Added
+        "last_name": last_name,    # Added
         "username": username,
         "email": email,
         "password_hash": hashed_password,
@@ -49,6 +53,7 @@ def register():
     send_verification_email(email, verification_link)
 
     return jsonify({"message": "User registered. Check email to verify account."}), 201
+
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 
 def send_verification_email(email, link):
@@ -62,42 +67,54 @@ def send_verification_email(email, link):
         logging.error(f"❌ Email sending failed for {email}: {e}")
         return {"success": False, "error": str(e)}
 
+import jwt                      # Ensure jwt is imported
+from werkzeug.security import check_password_hash
+from datetime import datetime, timedelta
+
 @auth_bp.route("/login", methods=["POST"])
 def login():
-    """Handles user login and returns a JWT token."""
-    data = request.json
+    # Extract JSON data from the request
+    data = request.get_json()
+    if not data:
+        return jsonify({"error": "No data provided"}), 400
+
+    # Extract email and password immediately
     email = data.get("email")
     password = data.get("password")
 
+    # Check that both email and password are provided
     if not email or not password:
         return jsonify({"error": "Email and password are required"}), 400
 
-    # Find user in database
+    # Find the user in the database
     user = users_collection.find_one({"email": email})
     if not user:
         return jsonify({"error": "Invalid email or password"}), 401
 
-    # Check if password is correct
+    # Verify the password using the hashed version stored in the DB
     if not check_password_hash(user["password_hash"], password):
         return jsonify({"error": "Invalid email or password"}), 401
 
-    # Check if the account is verified
+    # Ensure the user is verified
     if not user.get("is_verified", False):
         return jsonify({"error": "Email not verified. Please check your inbox."}), 403
 
-    # Generate a JWT token
+    # Generate a JWT token with the required claims. Note the 'sub' claim is added.
     token = jwt.encode(
         {
-            "email": email, 
-            "sub": email,
+            "email": email,
+            "sub": user.get("first_name", ""),  
             "exp": datetime.utcnow() + timedelta(hours=24)
         },
         Config.SECRET_KEY,
         algorithm="HS256"
     )
 
-    return jsonify({"message": "Login successful", "token": token}), 200
-
+    return jsonify({
+        "message": "Login successful", 
+        "token": token,
+        "first_name": user.get("first_name", "")
+        }), 200
 
 @auth_bp.route("/verify/<token>", methods=["GET"])
 def verify_email(token):
@@ -191,7 +208,6 @@ def send_password_reset_email(email, reset_link):
     except Exception as e:
         print(f"⚠️ Failed to send email: {e}")
 
-
 @auth_bp.route("/reset-password/<token>", methods=["POST"])
 def reset_password(token):
     """Handles password reset after clicking the reset link."""
@@ -210,8 +226,8 @@ def reset_password(token):
     if datetime.utcnow() > user["reset_expiry"]:
         return jsonify({"error": "Reset token expired. Request a new one."}), 400
 
-    # Hash the new password
-    hashed_password = generate_password_hash(new_password)
+    # Hash the new password explicitly
+    hashed_password = generate_password_hash(new_password, method='pbkdf2:sha256:150000')  # Modified
 
     # Update password in database and remove reset token
     users_collection.update_one(

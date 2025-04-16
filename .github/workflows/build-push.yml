@@ -36,7 +36,7 @@ jobs:
             -t mutumamunyua/crophealthai:latest \
             --push .
 
-      # Trigger CD
+      # Trigger CD on Render
       - name: Trigger Render Redeploy
         run: |
           echo "Triggering redeploy on Render..."
