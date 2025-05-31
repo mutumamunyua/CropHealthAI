@@ -1,0 +1,355 @@
+body {
+    background-image: url('hmaize.jpeg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+}
+
+.container {
+    background-color: rgba(255, 255, 255, 0.95);
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    margin-top: 40px;
+}
+
+h3 {
+    color: #333;
+}
+
+#user-greeting {
+    font-weight: bold;
+}
+
+/* General Styling */
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #f7f9fc;
+    padding: 20px;
+    text-align: center;
+}
+
+/* Container Box */
+.container {
+    background: #ffffff;
+    padding: 25px;
+    max-width: 700px;
+    margin: auto;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Navigation Buttons */
+nav {
+    margin-bottom: 20px;
+}
+
+nav button {
+    margin: 0 8px;
+    padding: 8px 20px;
+    font-size: 15px;
+    font-weight: bold;
+}
+
+.btn-primary {
+    background-color: #3498db;
+    color: white;
+}
+
+.btn-success {
+    background-color: #28a745;
+    color: white;
+}
+
+.btn-warning {
+    background-color: #f39c12;
+    color: white;
+}
+
+.btn-danger {
+    background-color: #e74c3c;
+    color: white;
+}
+
+.btn-secondary {
+    background-color: #6c757d;
+    color: white;
+}
+
+button:hover {
+    opacity: 0.85;
+}
+
+/* Headers */
+h1, h3, h4 {
+    color: #34495e;
+    margin-bottom: 20px;
+}
+
+/* Forms and Inputs */
+form {
+    text-align: left;
+    max-width: 500px;
+    margin: auto;
+}
+
+form input {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+form label {
+    font-weight: 600;
+    color: #2c3e50;
+}
+
+/* Select Dropdown for Services */
+form select {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+/* Loading Indicator */
+#loading {
+    margin-top: 20px;
+    font-weight: bold;
+    color: #f39c12;
+}
+
+/* Prediction Results Styling */
+#predictions-container {
+    margin-top: 25px;
+    padding: 10px;
+    background: #ecf0f1;
+    border-radius: 5px;
+}
+
+/* Table Styling */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+    background: #ffffff;
+    box-shadow: 0px 3px 8px rgba(0, 0, 0, 0.1);
+}
+
+th, td {
+    padding: 10px;
+    text-align: center;
+    border: 1px solid #ddd;
+}
+
+th {
+    background-color: #34495e;
+    color: white;
+}
+
+tr:nth-child(even) {
+    background-color: #fafafa;
+}
+
+tr:hover {
+    background-color: #f2f2f2;
+}
+
+/* Confidence Level Colors */
+.confidence-high {
+    color: #27ae60;
+    font-weight: bold;
+}
+
+.confidence-medium {
+    color: #f1c40f;
+    font-weight: bold;
+}
+
+.confidence-low {
+    color: #e74c3c;
+    font-weight: bold;
+}
+
+/* Image Thumbnails */
+.img-thumbnail {
+    border-radius: 8px;
+    box-shadow: 1px 1px 5px rgba(0,0,0,0.2);
+}
+
+/* Authentication Sections */
+#login-section, #signup-section, #upload-section {
+    background: #fdfdfd;
+    border-radius: 8px;
+    box-shadow: 0px 2px 6px rgba(0,0,0,0.1);
+    padding: 15px;
+    margin-bottom: 20px;
+}
+
+/* Greeting */
+#greeting {
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+/* Hidden Elements */
+.hidden, .d-none {
+    display: none !important;
+}
+
+/* Responsive Design */
+@media (max-width: 600px) {
+    .container {
+        max-width: 95%;
+        padding: 15px;
+    }
+
+    th, td {
+        font-size: 14px;
+    }
+
+    nav button {
+        font-size: 14px;
+        padding: 6px 15px;
+    }
+
+    form input, form select {
+        font-size: 14px;
+    }
+}
+
+/* Background Image Styling for Login/Signup Pages */
+.auth-background {
+    background-image: url('hmaize.jpeg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.auth-box {
+    background-color: rgba(255, 255, 255, 0.9);
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    max-width: 400px;
+    width: 100%;
+}
+
+/* Treatment Images Styling */
+.treatment-images img {
+    margin: 5px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 5px;
+    width: 100px;
+    height: auto;
+}
+
+/* Registration Forms */
+#register-agrovet-section, #register-extension-worker-section {
+    background: #fdfdfd;
+    border-radius: 8px;
+    box-shadow: 0px 2px 6px rgba(0,0,0,0.1);
+    padding: 15px;
+    margin-bottom: 20px;
+}
+
+#register-agrovet-section h3, #register-extension-worker-section h3 {
+    color: #34495e;
+}
+
+#register-agrovet-form, #register-extension-worker-form {
+    text-align: left;
+    max-width: 500px;
+    margin: auto;
+}
+
+#register-agrovet-form input, #register-agrovet-form select, #register-extension-worker-form input, #register-extension-worker-form select {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+#register-agrovet-form label, #register-extension-worker-form label {
+    font-weight: 600;
+    color: #2c3e50;
+}
+
+#agrovet-response, #extension-worker-response {
+    margin-top: 15px;
+    font-weight: bold;
+    color: #e74c3c;
+}
+
+#agrovet-response.success, #extension-worker-response.success {
+    color: #28a745;
+}
+
+/* Treatment Page Enhancements */
+
+/* Treatment Container */
+#treatment-container {
+    background: #ffffff;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+    margin-top: 20px;
+}
+
+/* Treatment Text */
+#treatment-container p.lead {
+    font-size: 18px;
+    color: #2c3e50;
+}
+
+/* Treatment Section Headers */
+#treatment-container h4 {
+    color: #27ae60;
+    margin-top: 30px;
+    margin-bottom: 15px;
+}
+
+/* Agrovets and Extension Workers List */
+#treatment-container .list-group-item {
+    background: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    text-align: left;
+}
+
+/* Treatment Images Layout */
+#treatment-container .row img {
+    border-radius: 8px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+#treatment-container .row img:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* Treatment Back Button */
+.container .btn-secondary {
+    margin-top: 30px;
+    padding: 10px 25px;
+    font-size: 16px;
+    border-radius: 8px;
+}
+
+/* Responsive tweaks */
+@media (max-width: 768px) {
+    #treatment-container {
+        padding: 20px;
+    }
+}

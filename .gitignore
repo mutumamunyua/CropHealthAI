@@ -1,0 +1,13 @@
+# Python
+__pycache__/
+*.py[cod]
+
+# Virtual environments
+venv/
+venv 2/
+
+# macOS system files
+.DS_Store
+
+# Uploads and local data
+backend/uploads/
