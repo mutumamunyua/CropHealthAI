@@ -1,0 +1,189 @@
+County,Town,Latitude,Longitude
+Baringo,Kabarnet,0.4901,35.7434
+Baringo,Mogotio,-0.02236,35.96124
+Baringo,Marigat,0.47119,35.98638
+Baringo,Eldama Ravine,0.5,35.7167
+Bomet,Bomet,-0.7778,35.3357
+Bomet,Sotik,-0.57795,35.36583
+Bungoma,Bungoma,0.5667,34.5667
+Bungoma,Webuye,0.6167,34.7667
+Bungoma,Kimilili,0.7833,34.7167
+Bungoma,Misikhu,0.718642,34.754742
+Bungoma,Bumula,0.552962,34.457371
+Bungoma,Sirisia,0.75471,34.50351
+Bungoma,Tongaren,0.78487,34.99221
+Bungoma,Mount Elgon,0.93329,34.60654
+Busia,Busia,0.4633,34.1053
+Busia,Malaba,0.63513,34.28165
+Busia,Funyula,0.27878,34.11869
+Busia,Nambale,0.13333,34.1
+Busia,Butula,0.3416124,34.3352003
+Busia,Budalangi,0.136227,34.026
+Busia,Matayos,0.35958,34.17005
+Elgeyo-Marakwet,Iten,0.6731,35.5083
+Elgeyo-Marakwet,Kapcherop,1.04026,35.32121
+Elgeyo-Marakwet,Tambach,0.59103,35.52166
+Elgeyo-Marakwet,Kapsowar,0.948567,35.5084609
+Embu,Embu,-0.5389,37.4583
+Embu,Runyenjes,-0.42304,37.57043
+Embu,Siakago,-0.57728,37.63996
+Embu,Kiritiri,-0.68766,37.64805
+Garissa,Garissa,-0.4569,39.6583
+Garissa,Masalani,-1.69405,40.17015
+Garissa,Dadaab,0.0531,40.3086
+Garissa,Bura,-3.49974,38.32177
+Homa Bay,Homa Bay,-0.5167,34.45
+Homa Bay,Mbita,-0.42492,34.20736
+Homa Bay,Oyugis,-0.5079,34.7382
+Homa Bay,Sindo,-0.54061,34.16891
+Homa Bay,Kendu Bay,-0.3667,34.65
+Homa Bay,Karachuonyo,-0.37701,34.65028
+Homa Bay,Rangwe,-0.60032,34.58353
+Homa Bay,Ndhiwa,-0.73148,34.36785
+Isiolo,Isiolo,0.35,37.5833
+Isiolo,Garba Tula,0.5339,38.5186
+Isiolo,Merti,1.06725,38.6662
+Kajiado,Kajiado,-1.85,36.7833
+Kajiado,Ongata Rongai,-1.4,36.77
+Kajiado,Ngong,-1.3667,36.6333
+Kajiado,Kitengela,-1.6667,36.9833
+Kajiado,Namanga,-2.54,36.8
+Kakamega,Kakamega,0.2822,34.754
+Kakamega,Mumias,0.3333,34.4833
+Kakamega,Butere,0.2167,34.5
+Kakamega,Khwisero,0.17124,34.59466
+Kakamega,Luanda,0.12444,34.46745
+Kericho,Kericho,-0.3692,35.2839
+Kericho,Litein,-0.58249,35.18969
+Kericho,Kipkelion,-0.19982,35.46735
+Kiambu,Kiambu,-1.1667,36.8167
+Kiambu,Thika,-1.0396,37.09
+Kiambu,Ruiru,-1.17,36.95
+Kiambu,Limuru,-1.25,36.65
+Kiambu,Kikuyu,-1.25,36.6667
+Kiambu,Githunguri,-1.0472,36.9021
+Kiambu,Juja,-1.183,37.117
+Kiambu,Kabete,-1.2066,36.7689
+Kiambu,Lari,-1.02538,36.63087
+Kilifi,Kilifi,-3.6333,39.85
+Kilifi,Malindi,-3.2236,40.13
+Kilifi,Mtwapa,-3.9435,39.7453
+Kilifi,Mariakani,-3.87,39.47
+Kilifi,Watamu,-3.3425,40.0274
+Kilifi,Ganze,-3.54388,39.69277
+Kilifi,Kaloleni,-3.81413,39.63144
+Kilifi,Rabai,-3.93168,39.57041
+Kirinyaga,Kerugoya,-0.4989,37.2803
+Kirinyaga,Kutus,-0.5753,37.3269
+Kirinyaga,Wanguru,-0.68393,37.35701
+Kirinyaga,Sagana,-0.66806,37.20875
+Kisii,Kisii,-0.6833,34.7667
+Kisii,Ogembo,-0.80116,34.72579
+Kisumu,Kisumu,-0.0917,34.768
+Kisumu,Muhoroni,-0.15,35.2
+Kisumu,Awasi,-0.1616445,35.0732265
+Kisumu,Ahero,-0.1744,34.9203
+Kisumu,Maseno,-0.00661,34.60004
+Kitui,Kitui,-1.3667,38.0167
+Kitui,Mwingi,-0.93605,38.05955
+Kitui,Mutomo,-1.84752,38.20836
+Kitui,Ikutha,-2.0667,38.1833
+Kwale,Kwale,-4.1744,39.4603
+Kwale,Ukunda,-4.2875,39.5661
+Kwale,Msambweni,-4.4619,39.48265
+Kwale,Kinango,-4.1393,39.318
+Kwale,Lunga Lunga,-4.555,39.1231
+Laikipia,Rumuruti,0.26,36.5363
+Laikipia,Nanyuki,0.02,37.06
+Laikipia,Nyahururu,0.04,36.36
+Lamu,Lamu,-2.2694,40.9022
+Lamu,Mpeketoni,-2.38913,40.69812
+Machakos,Machakos,-1.5167,37.2667
+Machakos,Athi River,-1.45,37.0
+Machakos,Mavoko,-1.45,37.0
+Machakos,Kangundo,-1.35,37.37
+Machakos,Masii,-1.46127,37.43849
+Makueni,Wote,-1.7833,37.6333
+Makueni,Kibwezi,-2.42,37.97
+Makueni,Emali,-1.6889,37.25
+Makueni,Sultan Hamud,-2.02042,37.37212
+Mandera,Mandera,3.9167,41.8333
+Mandera,El Wak,2.8028,40.9275
+Mandera,Ramu,3.9375,41.2203
+Mandera,Banisa,3.897056,40.320253
+Marsabit,Marsabit,2.3333,37.9833
+Marsabit,Moyale,3.52,39.05
+Marsabit,Laisamis,1.5932,37.80595
+Meru,Meru,0.05,37.65
+Meru,Makutano,-2.53621,37.52935
+Meru,Ruiri,0.17799,37.63022
+Meru,Kianjai,0.16113,37.74706
+Meru,Mutuati,0.38435,37.98067
+Meru,Maua,0.2329201,37.9408902
+Meru,Nkubu,-0.06929,37.66618
+Meru,Kariene,-0.038256,37.661827
+Meru,Igoji,-0.19309,37.66724
+Meru,Kathera,-0.054743055,37.6116075
+Meru,Katheri,0.00828,37.60036
+Meru,Chaaria,-0.00809,37.766407
+Meru,Giaki,0.02983,37.78625
+Meru,Timau,0.0835,37.23925
+Meru,Miathene,0.15097,37.78865
+Migori,Migori,-1.0667,34.47
+Migori,Kehancha,-1.1939843,34.6165033
+Migori,Awendo,-0.5,34.4
+Migori,Rongo,-0.75675,34.59833
+Mombasa,Mombasa,-4.0437,39.6589
+Mombasa,Likoni,-4.0929,39.6614
+Mombasa,Changamwe,-4.0261,39.6306
+Mombasa,Kisauni,-4.0333,39.6833
+Mombasa,Nyali,-4.05246,39.69541
+Murang'a,Murang'a,-0.71,37.15
+Murang'a,Kenol,-0.9,37.1167
+Murang'a,Kangema,-0.68553,36.96463
+Murang'a,Maragwa,-0.17698,38.09695
+Nairobi City,Nairobi,-1.2864,36.8172
+Nakuru,Nakuru,-0.3,36.0667
+Nakuru,Naivasha,-0.7172,36.431
+Nakuru,Molo,-0.25,35.7333
+Nakuru,Gilgil,-0.217,36.267
+Nakuru,Keringet,-0.4260762,35.6901698
+Nandi,Kapsabet,0.3333,35.1667
+Nandi,Nandi Hills,0.1003,35.1764
+Narok,Narok,-1.0833,35.8667
+Narok,Kilgoris,-1.00819,34.87809
+Nyamira,Nyamira,-0.56333,34.93583
+Nyamira,Kebirigo,-0.60292,34.96124
+Nyandarua,Ol Kalou,-0.27,36.38
+Nyandarua,Nyahururu,0.04,36.36
+Nyeri,Nyeri,-0.4167,36.95
+Nyeri,Karatina,-0.99481,36.75695
+Nyeri,Mukurweini,-0.56115,37.04474
+Samburu,Maralal,1.1,36.7
+Samburu,Baragoi,1.7833,36.7833
+Siaya,Siaya,0.0626,34.2878
+Siaya,Bondo,-0.16678600224,34.122756999572
+Siaya,Ugunja,0.1823,34.2967
+Taita-Taveta,Mwatate,-3.5047,38.3778
+Taita-Taveta,Voi,-3.37,38.57
+Taita-Taveta,Taveta,-3.4,37.68
+Taita-Taveta,Wundanyi,-3.3983,38.3603
+Tana River,Hola,-1.5,40.0333
+Tana River,Garsen,-2.26645,40.10975
+Tharaka-Nithi,Kathwana,-0.3164,37.8664
+Tharaka-Nithi,Chuka,-0.322865,37.6546274
+Tharaka-Nithi,Marimanti,-0.15457,37.97625
+Trans Nzoia,Kitale,1.0167,35.0
+Trans Nzoia,Kimilili,0.7833,34.7167
+Turkana,Lodwar,3.1167,35.6
+Turkana,Kakuma,3.7167,34.8667
+Uasin Gishu,Eldoret,0.5167,35.2833
+Uasin Gishu,Iten,0.6731,35.5083
+Uasin Gishu,Turbo,0.6339,35.0486
+Vihiga,Mbale,0.08213,34.72139
+Vihiga,Luanda,-0.81063,34.21894
+Vihiga,Hamisi,0.09,34.85
+Wajir,Wajir,1.75,40.05
+Wajir,Habaswein,1.01,39.49
+West Pokot,Kapenguria,1.2482,35.1104
+West Pokot,Makutano,1.267,35.1

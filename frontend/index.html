@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CropHealthAI</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="static/styles.css">
+  </head>
+
+<body class="bg-light">
+
+  <div class="container mt-5">
+
+    <!-- Greeting (for logged-in users) -->
+    <h4 id="user-greeting" class="text-success text-center mb-3"></h4>
+
+    <!-- Navigation Buttons -->
+    <nav class="mb-4 text-center">
+      <button id="btn-login" class="btn btn-primary">Login</button>
+      <button id="btn-signup" class="btn btn-success">Sign Up</button>
+      <button id="btn-logout" class="btn btn-danger d-none">Logout</button>
+      <button id="btn-register-agrovet" class="btn btn-secondary d-none">Register Agrovet</button>
+      <button id="btn-register-extension-worker" class="btn btn-secondary d-none">Register Extension Worker</button>
+    </nav>
+
+    <!-- Login Section -->
+    <div id="login-section" class="d-none">
+      <h3>Login</h3>
+      <form id="login-form">
+        <div class="mb-3">
+          <label for="loginEmail" class="form-label">Email</label>
+          <input type="email" class="form-control" id="loginEmail" required>
+        </div>
+        <div class="mb-3">
+          <label for="loginPassword" class="form-label">Password</label>
+          <input type="password" class="form-control" id="loginPassword" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Login</button>
+      </form>
+    </div>
+
+    <!-- Signup Section -->
+    <div id="signup-section" class="d-none">
+      <h3>Sign Up</h3>
+      <form id="signup-form">
+        <div class="mb-3">
+          <label for="signupFirstName" class="form-label">First Name</label>
+          <input type="text" class="form-control" id="signupFirstName" required>
+        </div>
+        <div class="mb-3">
+          <label for="signupLastName" class="form-label">Last Name</label>
+          <input type="text" class="form-control" id="signupLastName" required>
+        </div>
+        <div class="mb-3">
+          <label for="signupUsername" class="form-label">Username</label>
+          <input type="text" class="form-control" id="signupUsername" required>
+        </div>
+        <div class="mb-3">
+          <label for="signupEmail" class="form-label">Email</label>
+          <input type="email" class="form-control" id="signupEmail" required>
+        </div>
+        <div class="mb-3">
+          <label for="signupPassword" class="form-label">Password</label>
+          <input type="password" class="form-control" id="signupPassword" required>
+        </div>
+        <button type="submit" class="btn btn-success">Sign Up</button>
+      </form>
+    </div>
+
+    <!-- Register Agrovet Section -->
+    <div id="register-agrovet-section" class="d-none">
+      <h3>Register Agrovet</h3>
+      <form id="register-agrovet-form">
+        <div class="mb-3">
+          <label for="agrovetName" class="form-label">Name</label>
+          <input type="text" class="form-control" id="agrovetName" required>
+        </div>
+        <div class="mb-3">
+          <label for="agrovet-county" class="form-label">County</label>
+          <select class="form-select" id="agrovet-county" required>
+            <option value="">Select County</option>
+          </select>
+        </div>
+        <div class="mb-3">
+          <label for="agrovet-town" class="form-label">Town</label>
+          <select class="form-select" id="agrovet-town" required>
+            <option value="">Select Town</option>
+          </select>
+        </div>
+        <div class="mb-3">
+          <label for="agrovetContact" class="form-label">Contact</label>
+          <input type="text" class="form-control" id="agrovetContact" required>
+        </div>
+        <button type="submit" class="btn btn-secondary">Register Agrovet</button>
+      </form>
+      <div id="agrovet-response"></div>
+    </div>
+
+      <!-- Register Extension Worker Section -->
+      <div id="register-extension-worker-section" class="d-none">
+        <h3>Register Extension Worker</h3>
+        <form id="register-extension-worker-form">
+          <div class="mb-3">
+            <label for="extensionWorkerFirstName" class="form-label">First Name</label>
+            <input type="text" class="form-control" id="extensionWorkerFirstName" required>
+          </div>
+          <div class="mb-3">
+            <label for="extensionWorkerLastName" class="form-label">Last Name</label>
+            <input type="text" class="form-control" id="extensionWorkerLastName" required>
+          </div>
+          <div class="mb-3">
+            <label for="extension-worker-county" class="form-label">County</label>
+            <select class="form-select" id="extension-worker-county" required>
+              <option value="">Select County</option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label for="extension-worker-town" class="form-label">Town</label>
+            <select class="form-select" id="extension-worker-town" required>
+              <option value="">Select Town</option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label for="extensionWorkerServices" class="form-label">Services</label>
+            <select id="extensionWorkerServices" name="extensionWorkerServices" class="form-select" multiple required>
+              <option value="horticulture">Horticulture</option>
+              <option value="cash_crop_management">Cash Crop Management</option>
+              <option value="veterinary_services">Veterinary Services</option>
+              <option value="soil_analysis">Soil Analysis</option>
+              <option value="irrigation_advice">Irrigation Advice</option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label for="extensionWorkerContact" class="form-label">Contact</label>
+            <input type="text" class="form-control" id="extensionWorkerContact" required>
+          </div>
+          <button type="submit" class="btn btn-secondary">Register Extension Worker</button>
+        </form>
+        <div id="extension-worker-response"></div>
+      </div>
+ 
+    <!-- Upload Section (Protected) -->
+    <div id="upload-section" class="d-none">
+      <h3>Upload Images for AI Prediction</h3>
+      <form id="upload-form" class="text-center">
+        <div class="mb-3">
+          <input type="file" id="imageUpload" class="form-control" multiple accept="image/*">
+        </div>
+        <button type="submit" id="predict-button" class="btn btn-warning">Predict</button>
+      </form>
+
+      <!-- Loading Indicator -->
+      <div class="text-center mt-3" id="loading" style="display: none;">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Processing...</span>
+        </div>
+      </div>
+
+      <!-- Predictions Section -->
+      <div class="container mt-4">
+        <h4>Predictions:</h4>
+        <div id="predictions-container"></div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- Custom JavaScript -->
+  <script src="static/script.js"></script>
+</body>
+
+</html>
