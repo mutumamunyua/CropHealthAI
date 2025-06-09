@@ -81,6 +81,27 @@ def serve_index():
 def serve_static(path):
     return send_from_directory(FRONTEND_STATIC_DIR, path)
 
+@app.route('/auth/register-phone', methods=['POST'])
+def register_with_phone():
+    data = request.json
+    phone = data.get('phone')
+
+    if not phone:
+        return jsonify({"error": "Phone number is required"}), 400
+
+    try:
+        existing_user = users_collection.find_one({"phone": phone})
+        if existing_user:
+            return jsonify({"message": "User already registered"}), 200
+
+        users_collection.insert_one({
+            "phone": phone,
+            "created_at": datetime.utcnow()
+        })
+        return jsonify({"message": "Phone user registered successfully"}), 201
+    except Exception as e:
+        return jsonify({"error": f"Registration failed: {str(e)}"}), 500
+
 # Serve treatment images (unchanged)
 @app.route('/treatments/<path:filename>')
 def serve_treatment_images(filename):

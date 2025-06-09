@@ -1,4 +1,4 @@
-from flask import Blueprint, request, jsonify, url_for
+from flask import Blueprint, request, jsonify, url_for, current_app
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_mail import Message
 import uuid
@@ -9,6 +9,11 @@ from config import users_collection, mail, Config, agrovets_collection, extensio
 from pymongo import GEOSPHERE
 import logging
 from flask_cors import CORS
+from twilio.rest import Client
+import random
+import string
+import firebase_admin
+from firebase_admin import credentials, auth as firebase_auth
 
 auth_bp = Blueprint("auth", __name__)
 CORS(auth_bp)
@@ -317,3 +322,163 @@ def register_extension_worker():
         logging.error(f"⚠️ Error registering extension worker: {e}")
         return jsonify({"error": "Failed to register extension worker"}), 500
     
+
+# ====================== 📱 Twilio Phone Verification ======================
+
+# Store codes in-memory for now (we'll move to DB in later steps)
+verification_codes = {}
+
+
+twilio_client = Client(Config.TWILIO_ACCOUNT_SID, Config.TWILIO_AUTH_TOKEN)
+
+@auth_bp.route("/send-verification-code", methods=["POST"])
+def send_verification_code():
+    data = request.json
+    phone = data.get("phone")
+
+    if not phone:
+        return jsonify({"error": "Phone number is required"}), 400
+
+    code = str(random.randint(100000, 999999))
+    verification_codes[phone] = code  # store temporarily
+
+    try:
+        message = twilio_client.messages.create(
+            body=f"Your CropHealthAI verification code is: {code}",
+            from_=Config.TWILIO_PHONE_NUMBER,
+            to=phone
+        )
+        logging.info(f"✅ Sent verification code to {phone}: {code}")
+        return jsonify({"message": "Verification code sent!"}), 200
+    except Exception as e:
+        logging.error(f"❌ Failed to send SMS to {phone}: {e}")
+        return jsonify({"error": str(e)}), 500
+    
+@auth_bp.route("/verify-code", methods=["POST"])
+def verify_code():
+    data = request.json
+    phone = data.get("phone")
+    code = data.get("code")
+
+    if not phone or not code:
+        return jsonify({"error": "Phone number and code are required"}), 400
+
+    expected_code = verification_codes.get(phone)
+
+    if expected_code is None:
+        return jsonify({"error": "No verification code sent to this number"}), 404
+
+    if code != expected_code:
+        return jsonify({"error": "Incorrect verification code"}), 401
+
+    # Optionally remove code after successful verification
+    del verification_codes[phone]
+
+    return jsonify({"message": "Phone number successfully verified!"}), 200
+
+# ✅ NEW ROUTE: SMSSync-compatible route to send SMS messages
+@auth_bp.route('/smssync-send', methods=['POST'])
+def smssync_send():
+    try:
+        phone = request.form.get("from")
+        secret = request.form.get("secret")
+
+        # Validate secret
+        if secret != current_app.config["SMSSYNC_SECRET"]:
+            return jsonify({"task": "send", "secret": secret, "payload": []}), 403
+
+        # Generate random 6-digit code
+        code = ''.join(random.choices(string.digits, k=6))
+
+        # Save to DB or session if needed (skipped here for brevity)
+
+        message = f"Your CropHealthAI verification code is {code}"
+        payload = {
+            "task": "send",
+            "secret": secret,  # Echo it back!
+            "payload": [
+                {
+                    "to": phone.replace("+", "").strip(),
+                    "message": message
+                }
+            ]
+        }
+
+        return jsonify(payload)
+
+    except Exception as e:
+        return jsonify({"error": f"Internal error: {str(e)}"}), 500
+    
+# Initialize Firebase Admin SDK once
+if not firebase_admin._apps:
+    cred = credentials.Certificate(os.environ.get("FIREBASE_ADMIN_JSON"))
+    firebase_admin.initialize_app(cred)
+
+@auth_bp.route('/api/firebase-auth', methods=['POST'])
+def firebase_auth_route():
+    data = request.get_json()
+    id_token = data.get('id_token')
+    if not id_token:
+        return jsonify({'error': 'Missing token'}), 400
+
+    try:
+        decoded = firebase_auth.verify_id_token(id_token)
+        phone = decoded.get('phone_number')
+        uid = decoded.get('uid')
+
+        # Example: check user in DB and create if doesn't exist
+        # You could store this in SQLAlchemy, etc.
+        # if not User.query.filter_by(uid=uid).first():
+        #     create_user(phone, uid)
+
+        return jsonify({'message': 'User authenticated', 'phone': phone}), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 401
+    
+@auth_bp.route('/firebase-phone-login', methods=['POST'])
+def firebase_phone_login():
+    """
+    Accepts an ID token from Firebase, verifies it, and either registers or logs in the user.
+    """
+    data = request.json
+    id_token = data.get('id_token')
+
+    if not id_token:
+        return jsonify({'error': 'Missing Firebase ID token'}), 400
+
+    try:
+        # Verify Firebase token
+        decoded_token = firebase_auth.verify_id_token(id_token)
+        phone_number = decoded_token.get('phone_number')
+        uid = decoded_token.get('uid')
+
+        if not phone_number:
+            return jsonify({'error': 'Phone number not found in Firebase token'}), 400
+
+        # Check if user exists in MongoDB
+        user = users_collection.find_one({"phone": phone_number})
+        if not user:
+            # First-time login, create user
+            user_doc = {
+                "phone": phone_number,
+                "firebase_uid": uid,
+                "is_verified": True,
+                "created_at": datetime.utcnow()
+            }
+            users_collection.insert_one(user_doc)
+
+        # (Optional) Create JWT for app session
+        jwt_token = jwt.encode({
+            "phone": phone_number,
+            "exp": datetime.utcnow() + timedelta(hours=24)
+        }, Config.SECRET_KEY, algorithm="HS256")
+
+        return jsonify({
+            "message": "Phone login successful",
+            "phone": phone_number,
+            "token": jwt_token
+        }), 200
+
+    except Exception as e:
+        logging.error(f"Firebase phone auth failed: {e}")
+        return jsonify({'error': 'Firebase token verification failed'}), 401

@@ -28,10 +28,18 @@ class Config:
     MAIL_PASSWORD = os.getenv("MAIL_PASSWORD")
     MAIL_DEFAULT_SENDER = os.getenv("MAIL_DEFAULT_SENDER", MAIL_USERNAME)  # Use MAIL_USERNAME if sender is missing
     
+    # Twilio Configuration
+    TWILIO_ACCOUNT_SID = os.getenv("TWILIO_ACCOUNT_SID")
+    TWILIO_AUTH_TOKEN = os.getenv("TWILIO_AUTH_TOKEN")
+    TWILIO_PHONE_NUMBER = os.getenv("TWILIO_PHONE_NUMBER")
+
     # Security + AI Keys
     SECRET_KEY = os.environ.get("SECRET_KEY", "cfa1d0aa7ac3ff07b0c1d51292170ad8")
     HUGGING_FACE_API_KEY = os.getenv("HUGGING_FACE_API_KEY", "")
     GROQ_API_KEY = os.getenv("GROQ_API_KEY", "")  # Added
+    
+    # SMSSync Secret
+    SMSSYNC_SECRET = os.getenv("SMSSYNC_SECRET", "default_secret_key")
 
 # Initialize Flask-Mail
 mail = Mail()

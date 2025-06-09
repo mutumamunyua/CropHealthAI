@@ -1,13 +1,40 @@
-# Python
+# Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
+*.so
 
 # Virtual environments
 venv/
+.venv/
+env/
+.venv 2/
 venv 2/
 
 # macOS system files
 .DS_Store
 
-# Uploads and local data
+# Flask cache/log/temp files
+*.log
+*.pid
+*.db
+*.sqlite3
+instance/
+*.pyc
+
+# Uploads and temp data
 backend/uploads/
+backend/__pycache__/
+uploads/
+tmp/
+
+# Environment variables and credentials
+.env
+*.env
+
+# IDE/editor config
+.vscode/
+.idea/
+
+# OS-level thumbnail/cache files
+Thumbs.db
+ehthumbs.db
