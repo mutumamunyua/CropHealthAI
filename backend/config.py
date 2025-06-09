@@ -1,7 +1,9 @@
 from flask_mail import Mail
 import os
+import json
 from dotenv import load_dotenv
 from pymongo import MongoClient, GEOSPHERE
+
 
 # Load environment variables from .env file (if exists)
 load_dotenv()
@@ -28,18 +30,19 @@ class Config:
     MAIL_PASSWORD = os.getenv("MAIL_PASSWORD")
     MAIL_DEFAULT_SENDER = os.getenv("MAIL_DEFAULT_SENDER", MAIL_USERNAME)  # Use MAIL_USERNAME if sender is missing
     
-    # Twilio Configuration
-    TWILIO_ACCOUNT_SID = os.getenv("TWILIO_ACCOUNT_SID")
-    TWILIO_AUTH_TOKEN = os.getenv("TWILIO_AUTH_TOKEN")
-    TWILIO_PHONE_NUMBER = os.getenv("TWILIO_PHONE_NUMBER")
 
     # Security + AI Keys
     SECRET_KEY = os.environ.get("SECRET_KEY", "cfa1d0aa7ac3ff07b0c1d51292170ad8")
     HUGGING_FACE_API_KEY = os.getenv("HUGGING_FACE_API_KEY", "")
     GROQ_API_KEY = os.getenv("GROQ_API_KEY", "")  # Added
     
-    # SMSSync Secret
-    SMSSYNC_SECRET = os.getenv("SMSSYNC_SECRET", "default_secret_key")
+    # Firebase Admin SDK
+    FIREBASE_ADMIN_CREDENTIAL = os.getenv(
+        "FIREBASE_ADMIN_CREDENTIAL",
+        "/Users/philipmunyua/Documents/CropHealthAI/backend/secrets/firebase-adminsdk.json"
+)
+    FIREBASE_ADMIN_CREDENTIAL = os.getenv("FIREBASE_ADMIN_CREDENTIAL")
+    
 
 # Initialize Flask-Mail
 mail = Mail()

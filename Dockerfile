@@ -20,6 +20,9 @@ RUN pip install --no-cache-dir -r requirements.txt
 # 5) Copy the entire project into /app
 COPY . . 
 
+# ✅ Set the Firebase Admin SDK path
+ENV GOOGLE_APPLICATION_CREDENTIALS="/app/backend/secrets/firebase-adminsdk.json"
+
 # 6) Expose the port your Flask app runs on
 EXPOSE 5001
 

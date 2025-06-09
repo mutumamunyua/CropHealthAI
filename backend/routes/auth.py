@@ -13,6 +13,8 @@ import random
 import string
 import firebase_admin
 from firebase_admin import credentials, auth as firebase_auth
+import json
+from config import Config  # ✅ Add this line
 
 auth_bp = Blueprint("auth", __name__)
 CORS(auth_bp)
@@ -323,7 +325,7 @@ def register_extension_worker():
     
 # Initialize Firebase Admin SDK once
 if not firebase_admin._apps:
-    cred = credentials.Certificate(os.environ.get("FIREBASE_ADMIN_JSON"))
+    cred = credentials.Certificate(Config.FIREBASE_ADMIN_CREDENTIAL)
     firebase_admin.initialize_app(cred)
 
 @auth_bp.route('/api/firebase-auth', methods=['POST'])
