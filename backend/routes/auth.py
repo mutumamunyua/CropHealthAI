@@ -9,7 +9,6 @@ from config import users_collection, mail, Config, agrovets_collection, extensio
 from pymongo import GEOSPHERE
 import logging
 from flask_cors import CORS
-from twilio.rest import Client
 import random
 import string
 import firebase_admin
@@ -321,93 +320,6 @@ def register_extension_worker():
     except Exception as e:
         logging.error(f"⚠️ Error registering extension worker: {e}")
         return jsonify({"error": "Failed to register extension worker"}), 500
-    
-
-# ====================== 📱 Twilio Phone Verification ======================
-
-# Store codes in-memory for now (we'll move to DB in later steps)
-verification_codes = {}
-
-
-twilio_client = Client(Config.TWILIO_ACCOUNT_SID, Config.TWILIO_AUTH_TOKEN)
-
-@auth_bp.route("/send-verification-code", methods=["POST"])
-def send_verification_code():
-    data = request.json
-    phone = data.get("phone")
-
-    if not phone:
-        return jsonify({"error": "Phone number is required"}), 400
-
-    code = str(random.randint(100000, 999999))
-    verification_codes[phone] = code  # store temporarily
-
-    try:
-        message = twilio_client.messages.create(
-            body=f"Your CropHealthAI verification code is: {code}",
-            from_=Config.TWILIO_PHONE_NUMBER,
-            to=phone
-        )
-        logging.info(f"✅ Sent verification code to {phone}: {code}")
-        return jsonify({"message": "Verification code sent!"}), 200
-    except Exception as e:
-        logging.error(f"❌ Failed to send SMS to {phone}: {e}")
-        return jsonify({"error": str(e)}), 500
-    
-@auth_bp.route("/verify-code", methods=["POST"])
-def verify_code():
-    data = request.json
-    phone = data.get("phone")
-    code = data.get("code")
-
-    if not phone or not code:
-        return jsonify({"error": "Phone number and code are required"}), 400
-
-    expected_code = verification_codes.get(phone)
-
-    if expected_code is None:
-        return jsonify({"error": "No verification code sent to this number"}), 404
-
-    if code != expected_code:
-        return jsonify({"error": "Incorrect verification code"}), 401
-
-    # Optionally remove code after successful verification
-    del verification_codes[phone]
-
-    return jsonify({"message": "Phone number successfully verified!"}), 200
-
-# ✅ NEW ROUTE: SMSSync-compatible route to send SMS messages
-@auth_bp.route('/smssync-send', methods=['POST'])
-def smssync_send():
-    try:
-        phone = request.form.get("from")
-        secret = request.form.get("secret")
-
-        # Validate secret
-        if secret != current_app.config["SMSSYNC_SECRET"]:
-            return jsonify({"task": "send", "secret": secret, "payload": []}), 403
-
-        # Generate random 6-digit code
-        code = ''.join(random.choices(string.digits, k=6))
-
-        # Save to DB or session if needed (skipped here for brevity)
-
-        message = f"Your CropHealthAI verification code is {code}"
-        payload = {
-            "task": "send",
-            "secret": secret,  # Echo it back!
-            "payload": [
-                {
-                    "to": phone.replace("+", "").strip(),
-                    "message": message
-                }
-            ]
-        }
-
-        return jsonify(payload)
-
-    except Exception as e:
-        return jsonify({"error": f"Internal error: {str(e)}"}), 500
     
 # Initialize Firebase Admin SDK once
 if not firebase_admin._apps:
