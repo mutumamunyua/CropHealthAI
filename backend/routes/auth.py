@@ -325,7 +325,15 @@ def register_extension_worker():
     
 # Initialize Firebase Admin SDK once
 if not firebase_admin._apps:
-    cred = credentials.Certificate(Config.FIREBASE_ADMIN_CREDENTIAL_JSON)
+    if Config.FIREBASE_ADMIN_CREDENTIAL_JSON.startswith('{'):
+        # Write JSON string to a temporary file
+        firebase_path = "/tmp/firebase-adminsdk.json"
+        with open(firebase_path, "w") as f:
+            json.dump(json.loads(Config.FIREBASE_ADMIN_CREDENTIAL_JSON), f)
+        cred = credentials.Certificate(firebase_path)
+    else:
+        cred = credentials.Certificate(Config.FIREBASE_ADMIN_CREDENTIAL_JSON)
+    
     firebase_admin.initialize_app(cred)
 
 @auth_bp.route('/api/firebase-auth', methods=['POST'])
