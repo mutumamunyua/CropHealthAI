@@ -22,6 +22,7 @@ COPY . .
 
 # ✅ Set the Firebase Admin SDK path
 ENV GOOGLE_APPLICATION_CREDENTIALS="/app/backend/secrets/firebase-adminsdk.json"
+ENV FIREBASE_ADMIN_CREDENTIAL_JSON=""
 
 # 6) Expose the port your Flask app runs on
 EXPOSE 5001

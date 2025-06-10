@@ -38,3 +38,9 @@ tmp/
 # OS-level thumbnail/cache files
 Thumbs.db
 ehthumbs.db
+backend/secrets/firebase-adminsdk.json
+
+# Ignore unnecessary local folders
+CropHealthAI.git.bfg-report/
+CropHealthAI.git/
+logo/

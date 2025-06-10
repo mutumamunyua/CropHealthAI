@@ -1,6 +1,5 @@
 from flask_mail import Mail
-import os
-import json
+import os, json
 from dotenv import load_dotenv
 from pymongo import MongoClient, GEOSPHERE
 
@@ -37,12 +36,8 @@ class Config:
     GROQ_API_KEY = os.getenv("GROQ_API_KEY", "")  # Added
     
     # Firebase Admin SDK
-    FIREBASE_ADMIN_CREDENTIAL = os.getenv(
-        "FIREBASE_ADMIN_CREDENTIAL",
-        "/Users/philipmunyua/Documents/CropHealthAI/backend/secrets/firebase-adminsdk.json"
-)
-    FIREBASE_ADMIN_CREDENTIAL = os.getenv("FIREBASE_ADMIN_CREDENTIAL")
-    
+    FIREBASE_ADMIN_CREDENTIAL_JSON = os.getenv("FIREBASE_ADMIN_CREDENTIAL_JSON")
+  
 
 # Initialize Flask-Mail
 mail = Mail()

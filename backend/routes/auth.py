@@ -325,7 +325,7 @@ def register_extension_worker():
     
 # Initialize Firebase Admin SDK once
 if not firebase_admin._apps:
-    cred = credentials.Certificate(Config.FIREBASE_ADMIN_CREDENTIAL)
+    cred = credentials.Certificate(Config.FIREBASE_ADMIN_CREDENTIAL_JSON)
     firebase_admin.initialize_app(cred)
 
 @auth_bp.route('/api/firebase-auth', methods=['POST'])
